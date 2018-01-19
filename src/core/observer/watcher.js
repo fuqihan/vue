@@ -29,16 +29,16 @@ export default class Watcher {
   vm: Component;
   expression: string;
   cb: Function;
-  id: number;
-  deep: boolean;
+  id: number;   
+  deep: boolean;    //  深度的
   user: boolean;
-  lazy: boolean;
-  sync: boolean;
-  dirty: boolean;
-  active: boolean;
+  lazy: boolean;   // 判断是否为懒(很久不改变)？
+  sync: boolean;    // 是否为同步的
+  dirty: boolean;    //  是否有脏数据
+  active: boolean;   //  活跃的
   deps: Array<Dep>;
   newDeps: Array<Dep>;
-  depIds: SimpleSet;
+  depIds: SimpleSet;    
   newDepIds: SimpleSet;
   getter: Function;
   value: any;
@@ -132,7 +132,7 @@ export default class Watcher {
    */
   addDep (dep: Dep) {
     const id = dep.id
-    if (!this.newDepIds.has(id)) {
+    if (!this.newDepIds.has(id)) { // 返回一个布尔值，表示该值在Set中存在与否。
       this.newDepIds.add(id)
       this.newDeps.push(dep)
       if (!this.depIds.has(id)) {

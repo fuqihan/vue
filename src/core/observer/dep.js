@@ -12,9 +12,9 @@ let uid = 0
  * 指令订阅它。
  */
 export default class Dep {
-  static target: ?Watcher;
+  static target: ?Watcher;   //  target 是一个Watcher
   id: number;
-  subs: Array<Watcher>;
+  subs: Array<Watcher>;     // subs是一个有多个Watcher的数组
 
   constructor () {
     this.id = uid++
@@ -29,6 +29,7 @@ export default class Dep {
     remove(this.subs, sub)
   }
 
+  // 判断target的值
   depend () {
     if (Dep.target) {
       Dep.target.addDep(this)
