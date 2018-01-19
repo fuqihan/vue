@@ -20,9 +20,10 @@ const methodsToPatch = [
 
 /**
  * Intercept mutating methods and emit events
+ * 截取突变方法并发射事件
  */
 methodsToPatch.forEach(function (method) {
-  // cache original method
+  // cache original method  缓存原始方法
   const original = arrayProto[method]
   def(arrayMethods, method, function mutator (...args) {
     const result = original.apply(this, args)
@@ -38,7 +39,7 @@ methodsToPatch.forEach(function (method) {
         break
     }
     if (inserted) ob.observeArray(inserted)
-    // notify change
+    // notify change  通知变更
     ob.dep.notify()
     return result
   })
