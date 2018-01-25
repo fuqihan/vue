@@ -178,7 +178,9 @@ export function defineReactive(
     configurable: true,
     get: function reactiveGetter() {
       const value = getter ? getter.call(obj) : val
+      //每次new一个watcher（订阅者）对象的时候需要计算依赖的dep对象，Dep.target就是当前正在计算依赖的watcher对象
       if (Dep.target) {
+        // 调用属性的getter方法时，存在Dep.target则将当前dep和watcher绑定
         dep.depend()
         if (childOb) {
           childOb.dep.depend()
@@ -205,6 +207,7 @@ export function defineReactive(
         val = newVal
       }
       childOb = !shallow && observe(newVal)
+      // 调用属性的setter方法时，dep同时发布一次属性变化的通知到所有依赖的watcher对象
       dep.notify()  //通知 Watcher
     }
   })

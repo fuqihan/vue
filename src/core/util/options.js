@@ -271,6 +271,9 @@ export function validateComponentName (name: string) {
 /**
  * Ensure all props option syntax are normalized into the
  * Object-based format.
+ * 确保所有的道具选项语法都标准化为
+  *基于对象的格式。
+ * 对组件中props的处理, 把props转为对象
  */
 function normalizeProps (options: Object, vm: ?Component) {
   const props = options.props
@@ -282,6 +285,7 @@ function normalizeProps (options: Object, vm: ?Component) {
     while (i--) {
       val = props[i]
       if (typeof val === 'string') {
+        // 是否是a-b 这样的连字
         name = camelize(val)
         res[name] = { type: null }
       } else if (process.env.NODE_ENV !== 'production') {
@@ -292,6 +296,7 @@ function normalizeProps (options: Object, vm: ?Component) {
     for (const key in props) {
       val = props[key]
       name = camelize(key)
+      // item: Object or item : {type:Object}
       res[name] = isPlainObject(val)
         ? val
         : { type: val }
@@ -308,6 +313,11 @@ function normalizeProps (options: Object, vm: ?Component) {
 
 /**
  * Normalize all injections into Object-based format
+ * 将所有注射标准化为基于对象的格式
+ * 这对选项需要一起使用，
+ * 以允许一个祖先组件向其所有子孙后代注入一个依赖，
+ * 不论组件层次有多深，并在起上下游关系成立的时间里始终生效。
+ * 如果你熟悉 React，这与 React 的上下文特性很相似。
  */
 function normalizeInject (options: Object, vm: ?Component) {
   const inject = options.inject
@@ -335,6 +345,7 @@ function normalizeInject (options: Object, vm: ?Component) {
 
 /**
  * Normalize raw function directives into object format.
+ * 将原始函数指令归一化为对象格式。
  */
 function normalizeDirectives (options: Object) {
   const dirs = options.directives
@@ -361,6 +372,8 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
 /**
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
+ * 合并两个选项对象到一个新的。
+ * 用于实例化和继承的核心实用程序。
  */
 export function mergeOptions (
   parent: Object,

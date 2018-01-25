@@ -14,6 +14,7 @@ export function initEvents (vm: Component) {
   vm._hasHookEvent = false
   // init parent attached events
   const listeners = vm.$options._parentListeners
+  // 有父组件的事件时初始化，估计就是props和events父子组件通信的事件内容。
   if (listeners) {
     updateComponentListeners(vm, listeners)
   }

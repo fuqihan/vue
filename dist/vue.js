@@ -4538,6 +4538,7 @@ function initMixin (Vue) {
     // expose real self
     vm._self = vm;
     initLifecycle(vm);
+    debugger
     initEvents(vm);
     initRender(vm);
     callHook(vm, 'beforeCreate');
