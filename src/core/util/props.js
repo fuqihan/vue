@@ -20,14 +20,16 @@ type PropOptions = {
 
 export function validateProp (
   key: string,
-  propOptions: Object,
-  propsData: Object,
+  propOptions: Object,    //  $options.props属性
+  propsData: Object,     //  $options.propsData属性
   vm?: Component
 ): any {
   const prop = propOptions[key]
+  // 如果在propsData测试props上没有缓存的key
   const absent = !hasOwn(propsData, key)
   let value = propsData[key]
   // handle boolean props
+  // 处理boolean类型的数据
   if (isType(Boolean, prop.type)) {
     if (absent && !hasOwn(prop, 'default')) {
       value = false
@@ -37,9 +39,12 @@ export function validateProp (
   }
   // check default value
   if (value === undefined) {
+    // default属性值，是基本类型还是function
     value = getPropDefaultValue(vm, prop, key)
     // since the default value is a fresh copy,
     // make sure to observe it.
+    // 由于默认值是新鲜的副本，
+    // 确保观察它。
     const prevShouldConvert = observerState.shouldConvert
     observerState.shouldConvert = true
     observe(value)
