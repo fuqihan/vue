@@ -62,9 +62,11 @@ export function validateProp (
 
 /**
  * Get the default value of a prop.
+ * 获取prop的默认值
  */
 function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): any {
   // no default, return undefined
+  //  如果没有default属性的话，那么就返回undefined
   if (!hasOwn(prop, 'default')) {
     return undefined
   }
@@ -80,6 +82,8 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
   }
   // the raw prop value was also undefined from previous render,
   // return previous default value to avoid unnecessary watcher trigger
+  // 原始属性值也是以前的渲染中未定义的，
+  // 返回先前的默认值，以避免不必要的观察者触发
   if (vm && vm.$options.propsData &&
     vm.$options.propsData[key] === undefined &&
     vm._props[key] !== undefined
@@ -88,6 +92,8 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
   }
   // call factory function for non-Function types
   // a value is Function if its prototype is function even across different execution context
+  // 如果是function 则调用def.call(vm)
+  // 否则就返回default属性对应的值
   return typeof def === 'function' && getType(prop.type) !== 'Function'
     ? def.call(vm)
     : def

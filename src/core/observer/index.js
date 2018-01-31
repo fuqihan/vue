@@ -44,21 +44,26 @@ export class Observer {
   value: any;
   dep: Dep;
   vmCount: number;
-   // number of vms that has this object as root $data
+  // number of vms that has this object as root $data
   //  将此对象作为根$ data的vms数量
 
   constructor(value: any) {
     this.value = value
+    // dep记录了和这个value值的相关依赖
     this.dep = new Dep()
     this.vmCount = 0
+    // value其实就是vm._data, 即在vm._data上添加__ob__属性
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
+      // 首先判断是否能使用__proto__属性
       const augment = hasProto
         ? protoAugment
         : copyAugment
       augment(value, arrayMethods, arrayKeys)
+      // 遍历数组，并将obj类型的属性改为getter/setter实现
       this.observeArray(value)
     } else {
+      // 遍历obj上的属性，将每个属性改为getter/setter实现
       this.walk(value)
     }
   }
@@ -70,6 +75,7 @@ export class Observer {
    * 遍历每个属性并将其转换为
    * getter / setter。 这个方法只能在调用的时候调用
    * 值类型是Object。
+   * 将每个property对应的属性都转化为getter/setters,只能是当这个value的类型为Object时
    */
   walk(obj: Object) {
     const keys = Object.keys(obj)
@@ -159,10 +165,12 @@ export function defineReactive(
   customSetter?: ?Function,
   shallow?: boolean
 ) {
+  // 每个属性新建一个dep实例，管理这个属性的依赖
   const dep = new Dep()
 
   // 查找key 在obj上的描叙
   const property = Object.getOwnPropertyDescriptor(obj, key)
+  // 如果这个属性是不可配的，即无法更改
   if (property && property.configurable === false) {
     return
   }
@@ -181,7 +189,11 @@ export function defineReactive(
       //每次new一个watcher（订阅者）对象的时候需要计算依赖的dep对象，Dep.target就是当前正在计算依赖的watcher对象
       if (Dep.target) {
         // 调用属性的getter方法时，存在Dep.target则将当前dep和watcher绑定
+        // Dep.target.addDep(this)
+        // 即添加watch函数
+        // dep.depend()及调用了dep.addSub()只不过中间需要判断是否这个id的dep已经被包含在内了
         dep.depend()
+        // childOb也添加依赖
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
@@ -206,9 +218,10 @@ export function defineReactive(
       } else {
         val = newVal
       }
+       // 对得到的新值进行observe
       childOb = !shallow && observe(newVal)
       // 调用属性的setter方法时，dep同时发布一次属性变化的通知到所有依赖的watcher对象
-      dep.notify()  //通知 Watcher
+      dep.notify()  //通知 Watcher 相应的依赖进行更新
     }
   })
 }
