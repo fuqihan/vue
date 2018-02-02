@@ -32,7 +32,7 @@ export default class Watcher {
   id: number;
   deep: boolean;    //  深度的
   user: boolean;
-  lazy: boolean;   // 判断是否为懒(很久不改变)？
+  lazy: boolean;   // 判断是否为懒(很久不改变)？  computed属性中创建的Watcher会传入true
   sync: boolean;    // 是否为同步的
   dirty: boolean;    //  是否有脏数据
   active: boolean;   //  活跃的
@@ -80,7 +80,7 @@ export default class Watcher {
     // parse expression for getter
     // 为getter解析表达式
     if (typeof expOrFn === 'function') {
-      this.getter = expOrFn
+      this.getter = expOrFn   // updateComponent
     } else {
       this.getter = parsePath(expOrFn)
       if (!this.getter) {

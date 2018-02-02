@@ -15,11 +15,11 @@ import VNode, { createEmptyVNode } from '../vdom/vnode'
 
 import { isUpdatingChildComponent } from './lifecycle'
 
-export function initRender (vm: Component) {
+export function initRender(vm: Component) {
   vm._vnode = null // the root of the child tree   child的父级
   vm._staticTrees = null // v-once cached trees   v-on 缓存的树
   const options = vm.$options
-  const parentVnode = vm.$vnode = options._parentVnode 
+  const parentVnode = vm.$vnode = options._parentVnode
   // the placeholder node in parent tree 父树中的占位符节点
   const renderContext = parentVnode && parentVnode.context
   vm.$slots = resolveSlots(options._renderChildren, renderContext)
@@ -42,7 +42,7 @@ export function initRender (vm: Component) {
   // $attrs & $listeners are exposed for easier HOC creation.
   // they need to be reactive so that HOCs using them are always updated
   // $ attrs＆$ listeners被公开以便于创建HOC。
-   //他们需要反应，以便使用它们的HOC总是被更新
+  //他们需要反应，以便使用它们的HOC总是被更新
   const parentData = parentVnode && parentVnode.data
 
   /* istanbul ignore else */
@@ -59,7 +59,7 @@ export function initRender (vm: Component) {
   }
 }
 
-export function renderMixin (Vue: Class<Component>) {
+export function renderMixin(Vue: Class<Component>) {
   // install runtime convenience helpers
   installRenderHelpers(Vue.prototype)
 
@@ -85,6 +85,8 @@ export function renderMixin (Vue: Class<Component>) {
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
+    //设置父vnode。 这允许渲染功能有权访问
+    //到占位符节点上的数据。
     vm.$vnode = _parentVnode
     // render self
     let vnode
@@ -94,6 +96,8 @@ export function renderMixin (Vue: Class<Component>) {
       handleError(e, vm, `render`)
       // return error render result,
       // or previous vnode to prevent render error causing blank component
+      // 返回错误渲染结果，
+      // 或以前的vnode来防止导致空白组件的渲染错误
       /* istanbul ignore else */
       if (process.env.NODE_ENV !== 'production') {
         if (vm.$options.renderError) {
@@ -111,6 +115,7 @@ export function renderMixin (Vue: Class<Component>) {
       }
     }
     // return empty vnode in case the render function errored out
+    // 在渲染函数出错的情况下返回空虚拟节点
     if (!(vnode instanceof VNode)) {
       if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
         warn(

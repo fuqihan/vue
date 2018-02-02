@@ -12,14 +12,14 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 
 let uid = 0
 
-export function initMixin (Vue: Class<Component>) {
+export function initMixin(Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
     // a uid
     vm._uid = uid++
 
     let startTag, endTag
-    
+    // 性能统计相关
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       startTag = `vue-perf-start:${vm._uid}`
@@ -27,7 +27,7 @@ export function initMixin (Vue: Class<Component>) {
       mark(startTag)
     }
 
-    // a flag to avoid this being observed  一个标志，以避免被观察
+    // a flag to avoid this being observed  一个标志，以避免被观察  监听对象变化时用于过滤vm
     vm._isVue = true
     // merge options
     if (options && options._isComponent) {
@@ -35,8 +35,9 @@ export function initMixin (Vue: Class<Component>) {
       // since dynamic options merging is pretty slow, and none of the
       // internal component options needs special treatment.
       //优化内部组件实例
-       //因为动态选项合并很慢，而且没有
-       //内部组件选项需要特殊处理。
+      //因为动态选项合并很慢，而且没有
+      //内部组件选项需要特殊处理。
+      // 内部使用Vnode部分使用
       initInternalComponent(vm, options)
     } else {
       vm.$options = mergeOptions(
@@ -76,7 +77,7 @@ export function initMixin (Vue: Class<Component>) {
   }
 }
 
-export function initInternalComponent (vm: Component, options: InternalComponentOptions) {
+export function initInternalComponent(vm: Component, options: InternalComponentOptions) {
   const opts = vm.$options = Object.create(vm.constructor.options)
   // doing this because it's faster than dynamic enumeration. 这样做是因为它比动态枚举更快。
   const parentVnode = options._parentVnode
@@ -97,18 +98,24 @@ export function initInternalComponent (vm: Component, options: InternalComponent
   }
 }
 
-export function resolveConstructorOptions (Ctor: Class<Component>) {
+export function resolveConstructorOptions(Ctor: Class<Component>) {
   let options = Ctor.options
+  // 有super属性，说明Ctor是通过Vue.extend()方法创建的子类
+  // Ctor == vm.constructor
   if (Ctor.super) {
     const superOptions = resolveConstructorOptions(Ctor.super)
     const cachedSuperOptions = Ctor.superOptions
     if (superOptions !== cachedSuperOptions) {
       // super option changed,
       // need to resolve new options.
+      //super选项改变了，
+      //需要解决新的选项。
       Ctor.superOptions = superOptions
       // check if there are any late-modified/attached options (#4976)
+      //检查是否有任何后期修改/附加选项（＃4976）
       const modifiedOptions = resolveModifiedOptions(Ctor)
       // update base extend options
+      //更新基本扩展选项
       if (modifiedOptions) {
         extend(Ctor.extendOptions, modifiedOptions)
       }
@@ -121,7 +128,7 @@ export function resolveConstructorOptions (Ctor: Class<Component>) {
   return options
 }
 
-function resolveModifiedOptions (Ctor: Class<Component>): ?Object {
+function resolveModifiedOptions(Ctor: Class<Component>): ?Object {
   let modified
   const latest = Ctor.options
   const extended = Ctor.extendOptions
@@ -135,7 +142,7 @@ function resolveModifiedOptions (Ctor: Class<Component>): ?Object {
   return modified
 }
 
-function dedupe (latest, extended, sealed) {
+function dedupe(latest, extended, sealed) {
   // compare latest and sealed to ensure lifecycle hooks won't be duplicated
   // between merges
   if (Array.isArray(latest)) {

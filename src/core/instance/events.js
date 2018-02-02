@@ -12,7 +12,8 @@ import { updateListeners } from '../vdom/helpers/index'
 export function initEvents (vm: Component) {
   vm._events = Object.create(null)
   vm._hasHookEvent = false
-  // init parent attached events
+  // init parent attached events  init父级附加事件
+  // 父组件中绑定在自定义标签上的事件，供子组件处理。
   const listeners = vm.$options._parentListeners
   // 有父组件的事件时初始化，估计就是props和events父子组件通信的事件内容。
   if (listeners) {

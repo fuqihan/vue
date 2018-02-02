@@ -17,7 +17,7 @@ import {
   defineReactive
 } from '../util/index'
 
-export function initGlobalAPI (Vue: GlobalAPI) {
+export function initGlobalAPI(Vue: GlobalAPI) {
   // config
   const configDef = {}
   configDef.get = () => config
@@ -45,12 +45,15 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   Vue.nextTick = nextTick
 
   Vue.options = Object.create(null)
+  // Vue.options.components、Vue.options.directives、Vue.options.filters
   ASSET_TYPES.forEach(type => {
     Vue.options[type + 's'] = Object.create(null)
   })
 
   // this is used to identify the "base" constructor to extend all plain-object
   // components with in Weex's multi-instance scenarios.
+  // 这是用来标识“基础”的构造函数来扩展所有的普通对象
+  // 在Weex的多实例场景中的组件。
   Vue.options._base = Vue
 
   extend(Vue.options.components, builtInComponents)

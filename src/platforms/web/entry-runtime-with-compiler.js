@@ -31,10 +31,12 @@ Vue.prototype.$mount = function (
 
   const options = this.$options
   // resolve template/el and convert to render function
+  // 解决模板/ EL和转换为渲染功能
   if (!options.render) {
     let template = options.template
     if (template) {
       if (typeof template === 'string') {
+        // charAt() 方法可返回指定位置的字符。
         if (template.charAt(0) === '#') {
           template = idToTemplate(template)
           /* istanbul ignore if */
@@ -84,12 +86,15 @@ Vue.prototype.$mount = function (
 /**
  * Get outerHTML of elements, taking care
  * of SVG elements in IE as well.
+ * 获取元素的outerHTML，保重
+ * IE中的SVG元素。
  */
 function getOuterHTML (el: Element): string {
   if (el.outerHTML) {
     return el.outerHTML
   } else {
     const container = document.createElement('div')
+    // 把一个列表项从一个列表复制到另一个：
     container.appendChild(el.cloneNode(true))
     return container.innerHTML
   }
